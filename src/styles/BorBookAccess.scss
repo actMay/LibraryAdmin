@@ -1,0 +1,29 @@
+.borBookAccessBox{
+  border: 1px solid #000000;
+  padding: 20px;
+  width: 70%;
+  overflow: hidden;
+  margin: 20px 0;
+  .title{
+    font-size: 20px;
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+  .inputLine{
+
+    .bookInput{
+      display: inline-block;
+      margin-left: 10px;
+      margin-right: 20px;
+      width: 200px;
+      margin-bottom: 20px;
+    }
+  }
+  .BorBookAccSave{
+    float: right;
+  }
+  .BorBookAccReset{
+    float: right;
+    margin-right: 20px;
+  }
+}

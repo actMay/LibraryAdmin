@@ -1,0 +1,46 @@
+@import './BookAdmin.scss';
+@import './borBookAccess.scss';
+
+$headerHeight:50px;
+.body{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  .header {
+    height: $headerHeight;
+    font-size: 20px;
+    background: black;
+    .logo{
+      float: left;
+      width: $headerHeight;
+      height: $headerHeight;
+      margin-left: 20px;
+    }
+    .title{
+      padding-left: 20px;
+      color: #fff;
+      line-height: $headerHeight;
+      width: 500px;
+      display: inline-block;
+      margin: 0;
+      font-size: 30px;
+    }
+  }
+  .container{
+    flex: 1;
+    display: flex;
+    .tab{
+      height: 100%;
+      background: #000;
+    }
+    .rootBody{
+      flex: 1;
+      padding: 20px;
+      .Breadcrumb{
+        font-size: 16px;
+        margin-bottom: 20px;
+      }
+    }
+  }
+}
