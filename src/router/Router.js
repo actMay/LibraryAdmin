@@ -3,9 +3,7 @@ import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import { Menu, Icon, Button, Breadcrumb  } from 'antd';
 import LostBook from './../components/LostBook.js';
 import BookAdmin from './../components/BookAdmin.js';
-import NewBook from './../components/NewBook.js';
 import UserInfo from './../components/UserInfo.js';
-import BorBookLoss from './../components/BorBookLoss.js';
 import BorBookInfo from './../components/BorBookInfo.js';
 import ReturnBookInfo from './../components/ReturnBookInfo.js';
 import BorBookAccess from './../components/BorBookAccess.js';
@@ -22,7 +20,6 @@ export default class Routers extends Component{
     let matchPath = {
       '': '书籍信息管理',
       'lostBook': '丢失书籍管理',
-      'newBook': '新书推荐',
       'userInfo': '读者信息管理',
       'borBookLoss': '借书证挂失',
       'borBookInfo': '借书信息管理',
@@ -70,11 +67,9 @@ export default class Routers extends Component{
                       <SubMenu key="sub1" title={<span><Icon type="mail" /><span>书籍信息</span></span>}>
                         <Menu.Item key="1"><Link to="/">书籍信息管理</Link></Menu.Item>
                         <Menu.Item key="2"><Link to="/lostBook">丢失书籍管理</Link></Menu.Item>
-                        <Menu.Item key="3"><Link to="/newBook">新书推荐</Link></Menu.Item>
                       </SubMenu>
                       <SubMenu key="sub2" title={<span><Icon type="appstore" /><span>用户信息</span></span>}>
                         <Menu.Item key="4"><Link to="/userInfo">读者信息管理</Link></Menu.Item>
-                        <Menu.Item key="5"><Link to="/borBookLoss">借书证挂失</Link></Menu.Item>
                       </SubMenu>
                       <SubMenu key="sub3" title={<span><Icon type="pie-chart" /><span>借阅信息</span></span>}>
                         <Menu.Item key="6"><Link to="/borBookInfo">借书信息管理</Link></Menu.Item>
@@ -98,9 +93,7 @@ export default class Routers extends Component{
 
                       <Route exact path="/" component={BookAdmin}/>
                       <Route path="/lostBook" component={LostBook}/>
-                      <Route path="/newBook" component={NewBook}/>
                       <Route path="/userInfo" component={UserInfo}/>
-                      <Route path="/borBookLoss" component={BorBookLoss}/>
                       <Route path="/borBookInfo" component={BorBookInfo}/>
                       <Route path="/returnBookInfo" component={ReturnBookInfo}/>
                       <Route path="/borBookAccess" component={BorBookAccess}/>

@@ -129,6 +129,7 @@ export default class UserInfo extends Component{
           this.setState({
             'loading': false
           })
+          this.getData()
         }).catch((err) => {
           console.log(err)
         })
@@ -155,6 +156,7 @@ export default class UserInfo extends Component{
       }
     }).then((response) =>{
       var data = response.data
+      console.log(data)
       data.map((value, index) => {
         if(!value.borBook) {
           value.borBook = 0
