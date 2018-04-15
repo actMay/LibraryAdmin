@@ -237,6 +237,7 @@ export default class UserInfo extends Component{
     }];
     return (
       <div>
+        <div className="Breadcrumb">书籍信息/丢失书籍管理</div>
         <div>
           <div className="bookAdminSearch">
             <span className="bookAdminTitle">记录ID:</span>
@@ -258,7 +259,7 @@ export default class UserInfo extends Component{
           </div>
           <Button type="primary" icon="search" className="bookAdminSearchBtn" onClick={this.userSearch}>搜索</Button>
           <Button type="primary" icon="plus" className="bookAdminAddBtn" onClick={this.addUser}>增加</Button>
-          <Table columns={columns} dataSource={this.state.data} bordered/>
+          <Table columns={columns} dataSource={this.state.data} bordered pagination={{pageSize: 5}}/>
         </div>
         <Modal
           title={this.state.modalType}

@@ -1,12 +1,13 @@
 import React,{ Component } from 'react';
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
-import { Menu, Icon, Button, Breadcrumb  } from 'antd';
+import { Menu, Icon, Button  } from 'antd';
 import LostBook from './../components/LostBook.js';
 import BookAdmin from './../components/BookAdmin.js';
 import UserInfo from './../components/UserInfo.js';
 import BorBookInfo from './../components/BorBookInfo.js';
 import ReturnBookInfo from './../components/ReturnBookInfo.js';
 import BorBookAccess from './../components/BorBookAccess.js';
+import Chart from './../components/charts.js';
 const SubMenu = Menu.SubMenu;
 
 export default class Routers extends Component{
@@ -16,37 +17,29 @@ export default class Routers extends Component{
       'path': ''
     }
   }
-  componentDidMount() {
+  componentWillMount() {
     let matchPath = {
       '': '书籍信息管理',
       'lostBook': '丢失书籍管理',
       'userInfo': '读者信息管理',
-      'borBookLoss': '借书证挂失',
       'borBookInfo': '借书信息管理',
       'returnBookInfo': '还书信息管理',
       'borBookAccess': '系统信息设置',
     };
+    let matchSub = {
+      '': '书籍信息',
+      'lostBook': '书籍信息',
+      'userInfo': '用户信息',
+      'borBookInfo': '借阅信息',
+      'returnBookInfo': '借阅信息',
+      'borBookAccess': '书籍信息',
+      'chart': '书籍信息'
+    }
     let nowPath = window.location.href.split("//")[1].split('/')[1];
     this.setState({
-      'path': matchPath[nowPath]
+      'path': matchPath[nowPath],
+      'sub': matchSub[nowPath]
     })
-  }
-  componentWillUpdate() {
-    // let matchPath = {
-    //   '': '书籍信息管理',
-    //   'lostBook': '丢失书籍管理',
-    //   'newBook': '新书推荐',
-    //   'userInfo': '读者信息管理',
-    //   'borBookLoss': '借书证挂失',
-    //   'borBookInfo': '借书信息管理',
-    //   'returnBookInfo': '还书信息管理',
-    //   'borBookAccess': '借书权限设置',
-    //   'overdueFine': '超期罚款'
-    // };
-    // let nowPath = window.location.href.split("//")[1].split('/')[1];
-    // this.setState({
-    //   'path': matchPath[nowPath]
-    // })
   }
   render() {
       return (
@@ -59,36 +52,28 @@ export default class Routers extends Component{
                 <div className="container">
                   <div style={{ width: 256 }} className="tab">
                     <Menu
-                      defaultSelectedKeys={['1']}
-                      defaultOpenKeys={['sub1']}
+                      defaultSelectedKeys={[this.state.path]}
+                      defaultOpenKeys={[this.state.sub]}
                       mode="inline"
                       theme="dark"
                     >
-                      <SubMenu key="sub1" title={<span><Icon type="mail" /><span>书籍信息</span></span>}>
-                        <Menu.Item key="1"><Link to="/">书籍信息管理</Link></Menu.Item>
-                        <Menu.Item key="2"><Link to="/lostBook">丢失书籍管理</Link></Menu.Item>
+                      <SubMenu key="书籍信息" title={<span><Icon type="mail" /><span>书籍信息</span></span>}>
+                        <Menu.Item key="书籍信息管理"><Link to="/">书籍信息管理</Link></Menu.Item>
+                        <Menu.Item key="丢失书籍管理"><Link to="/lostBook">丢失书籍管理</Link></Menu.Item>
                       </SubMenu>
-                      <SubMenu key="sub2" title={<span><Icon type="appstore" /><span>用户信息</span></span>}>
-                        <Menu.Item key="4"><Link to="/userInfo">读者信息管理</Link></Menu.Item>
+                      <SubMenu key="用户信息" title={<span><Icon type="appstore" /><span>用户信息</span></span>}>
+                        <Menu.Item key="读者信息管理"><Link to="/userInfo">读者信息管理</Link></Menu.Item>
                       </SubMenu>
-                      <SubMenu key="sub3" title={<span><Icon type="pie-chart" /><span>借阅信息</span></span>}>
-                        <Menu.Item key="6"><Link to="/borBookInfo">借书信息管理</Link></Menu.Item>
-                        <Menu.Item key="7"><Link to="/returnBookInfo">还书信息管理</Link></Menu.Item>
+                      <SubMenu key="借阅信息" title={<span><Icon type="pie-chart" /><span>借阅信息</span></span>}>
+                        <Menu.Item key="借书信息管理"><Link to="/borBookInfo">借书信息管理</Link></Menu.Item>
+                        <Menu.Item key="还书信息管理"><Link to="/returnBookInfo">还书信息管理</Link></Menu.Item>
                       </SubMenu>
-                      <Menu.Item key="8"><Link to="/borBookAccess">系统信息设置</Link></Menu.Item>
-
+                      <Menu.Item key="系统信息设置"><Link to="/borBookAccess">系统信息设置</Link></Menu.Item>
+                      <Menu.Item key="图标"><Link to="/chart">数据分析表</Link></Menu.Item>
                     </Menu>
                   </div>
                   <div className="rootBody">
-                    <Breadcrumb className="Breadcrumb">
-                      <Breadcrumb.Item href="/">
-                        <Icon type="home" />
-                      </Breadcrumb.Item>
-                      <Breadcrumb.Item href="">
-                        <Icon type="user" />
-                        <span>{ this.state.path }</span>
-                      </Breadcrumb.Item>
-                    </Breadcrumb>
+
                     <Switch>
 
                       <Route exact path="/" component={BookAdmin}/>
@@ -97,6 +82,7 @@ export default class Routers extends Component{
                       <Route path="/borBookInfo" component={BorBookInfo}/>
                       <Route path="/returnBookInfo" component={ReturnBookInfo}/>
                       <Route path="/borBookAccess" component={BorBookAccess}/>
+                      <Route path="/chart" component={Chart}/>
                     </Switch>
                   </div>
                 </div>

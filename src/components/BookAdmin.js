@@ -257,6 +257,7 @@ export default class BookAdmin extends Component{
     }];
     return (
       <div>
+        <div className="Breadcrumb">书籍信息/书籍信息管理</div>
         <div className="bookAdminSearch">
           <span className="bookAdminTitle">书籍ID:</span>
           <div className="bookInput">
@@ -283,7 +284,7 @@ export default class BookAdmin extends Component{
         </div>
         <Button type="primary" icon="search" className="bookAdminSearchBtn" onClick={this.userSearch}>搜索</Button>
         <Button type="primary" icon="plus" className="bookAdminAddBtn" onClick={this.addBook}>增加</Button>
-        <Table columns={columns} dataSource={this.state.data} bordered/>
+        <Table columns={columns} dataSource={this.state.data} bordered pagination={{pageSize: 5}}/>
         <Modal
           title={this.state.modalType}
           visible={this.state.visible}

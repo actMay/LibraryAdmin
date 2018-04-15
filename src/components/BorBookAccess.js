@@ -73,6 +73,7 @@ export default class BorBookAccess extends Component{
   render() {
     return (
       <div>
+        <div className="Breadcrumb">系统信息设置</div>
         <div className="borBookAccessBox">
           <div className="title">教师用户</div>
           <div className="inputLine">教师用户借书时长：<div className="bookInput"><Input type="text" ref="teacherMaxTime"/></div></div>

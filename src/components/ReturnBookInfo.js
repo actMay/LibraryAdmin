@@ -1,5 +1,6 @@
 import React,{ Component } from 'react';
 import axios from 'axios';
+import moment from 'moment';
 import { Modal, Input, Button, Table, Select, notification, Popconfirm, message,DatePicker } from 'antd';
 const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 const Option = Select.Option;
@@ -37,7 +38,7 @@ export default class UserInfo extends Component{
       console.log(response)
       var data = response.data
       data.map((value, index) => {
-
+        value.time = moment(value.time).format('YYYY-MM-DD HH:mm:ss');
         return value.no = index+1
       })
       this.setState({
@@ -165,9 +166,9 @@ export default class UserInfo extends Component{
         'borId': value
       }
     }).then((response) =>{
-      this.refs.EditBorId.input.value = response.data[0].borId
+      this.refs.EditBorId.input.value = response.data[0].returnId
       this.refs.EditBorBookId.input.value = response.data[0].bookId
-      this.refs.EditBorTime.input.value = response.data[0].time
+      this.refs.EditBorTime.input.value = moment(response.data[0].time).format('YYYY-MM-DD HH:mm:ss')
       this.refs.EditBorPerId.input.value = response.data[0].personId
       this.refs.EditBorDetail.textAreaRef.value = response.data[0].detail
     }).catch((error)=>{
@@ -226,11 +227,11 @@ export default class UserInfo extends Component{
         return (
         <div>
           <div className="editBtn">
-            <Button type="dashed" onClick={this.UserEdit.bind(this, record.borId)}>编辑</Button>
+            <Button type="dashed" onClick={this.UserEdit.bind(this, record.returnId)}>编辑</Button>
           </div>
           <div className="delBtn">
             <Button type="danger">
-              <Popconfirm title="Are you sure delete this task?" onConfirm={this.confirm.bind(this, record.borId)} onCancel={this.cancel} okText="Yes" cancelText="No">
+              <Popconfirm title="Are you sure delete this task?" onConfirm={this.confirm.bind(this, record.returnId)} onCancel={this.cancel} okText="Yes" cancelText="No">
                 <a href="#">删除</a>
               </Popconfirm>
             </Button>
@@ -240,6 +241,7 @@ export default class UserInfo extends Component{
     }];
     return (
       <div>
+      <div className="Breadcrumb">借阅信息/还书信息管理</div>
         <div>
           <div className="bookAdminSearch">
             <span className="bookAdminTitle">书籍ID:</span>
@@ -248,13 +250,13 @@ export default class UserInfo extends Component{
             </div>
           </div>
           <div className="bookAdminSearch">
-            <span className="bookAdminTitle">借书人ID:</span>
+            <span className="bookAdminTitle">还书人ID:</span>
             <div className="bookInput">
               <Input placeholder="请输入读者ID" type="text" ref="searchUserName"/>
             </div>
           </div>
           <div className="bookAdminSearch">
-            <span className="bookAdminTitle">借书时间:</span>
+            <span className="bookAdminTitle">还书时间:</span>
             <div className="bookInput">
               <div>
                 <DatePicker onChange={this.onChange} />
@@ -263,7 +265,7 @@ export default class UserInfo extends Component{
           </div>
           <Button type="primary" icon="search" className="bookAdminSearchBtn" onClick={this.userSearch}>搜索</Button>
           <Button type="primary" icon="plus" className="bookAdminAddBtn" onClick={this.addUser}>增加</Button>
-          <Table columns={columns} dataSource={this.state.data} bordered/>
+          <Table columns={columns} dataSource={this.state.data} bordered pagination={{pageSize: 5}}/>
         </div>
         <Modal
           title={this.state.modalType}

@@ -1,5 +1,6 @@
 import React,{ Component } from 'react';
 import axios from 'axios';
+import moment from 'moment';
 import { Modal, Input, Button, Table, Select, notification, Popconfirm, message,DatePicker } from 'antd';
 const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 const Option = Select.Option;
@@ -37,7 +38,7 @@ export default class UserInfo extends Component{
       console.log(response)
       var data = response.data
       data.map((value, index) => {
-
+        value.time = moment(value.time).format('YYYY-MM-DD HH:mm:ss')
         return value.no = index+1
       })
       this.setState({
@@ -143,8 +144,8 @@ export default class UserInfo extends Component{
       }
     }).then((response) =>{
       var data = response.data
-      console.log(data)
       data.map((value, index) => {
+        value.time = moment(value.time).format('YYYY-MM-DD HH:mm:ss')
         return value.no = index+1
       })
       this.setState({
@@ -167,9 +168,17 @@ export default class UserInfo extends Component{
     }).then((response) =>{
       this.refs.EditBorId.input.value = response.data[0].borId
       this.refs.EditBorBookId.input.value = response.data[0].bookId
-      this.refs.EditBorTime.input.value = response.data[0].time
+      this.refs.EditBorTime.input.value = moment(response.data[0].time).format('YYYY-MM-DD HH:mm:ss')
       this.refs.EditBorPerId.input.value = response.data[0].personId
       this.refs.EditBorDetail.textAreaRef.value = response.data[0].detail
+      axios.get('/api/userInfo/EditCurrentUserInfo', {
+        params: {
+          'userId': response.data[0].personId
+        }
+      }).then((res)=>{
+        this.refs.EditBorPerName.input.value = res.data[0].userName
+        console.log(res)
+      })
     }).catch((error)=>{
       console.log(error)
     })
@@ -240,6 +249,7 @@ export default class UserInfo extends Component{
     }];
     return (
       <div>
+        <div className="Breadcrumb">借阅信息/借书信息管理</div>
         <div>
           <div className="bookAdminSearch">
             <span className="bookAdminTitle">书籍ID:</span>
@@ -263,7 +273,7 @@ export default class UserInfo extends Component{
           </div>
           <Button type="primary" icon="search" className="bookAdminSearchBtn" onClick={this.userSearch}>搜索</Button>
           <Button type="primary" icon="plus" className="bookAdminAddBtn" onClick={this.addUser}>增加</Button>
-          <Table columns={columns} dataSource={this.state.data} bordered/>
+          <Table columns={columns} dataSource={this.state.data} bordered pagination={{pageSize: 5}}/>
         </div>
         <Modal
           title={this.state.modalType}
@@ -342,6 +352,12 @@ export default class UserInfo extends Component{
             <div className="bookUserId">借书人ID:</div>
             <div className="bookInput">
               <Input ref="EditBorPerId"/>
+            </div>
+          </div>
+          <div className="bookAdminForm">
+            <div className="bookUserId">借书人姓名:</div>
+            <div className="bookInput">
+              <Input ref="EditBorPerName" disabled/>
             </div>
           </div>
           <div className="bookAdminForm">

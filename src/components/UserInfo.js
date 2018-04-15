@@ -1,6 +1,6 @@
 import React,{ Component } from 'react';
 import axios from 'axios';
-import { Modal, Input, Button, Table, Select, notification, Popconfirm, message } from 'antd';
+import { Modal, Input, Button, Table, Select, notification, Popconfirm, message, Upload, Icon } from 'antd';
 const Option = Select.Option;
 
 export default class UserInfo extends Component{
@@ -11,7 +11,7 @@ export default class UserInfo extends Component{
       'visible': false,
       'loading': false,
       'modalType': '',
-      'sort': '学生',
+      'sort': '',
       'Editvisible': false,
       'EditUserId': ''
     }
@@ -31,16 +31,26 @@ export default class UserInfo extends Component{
     axios.get('/api/userInfo',{
 
     }).then((response)=>{
-      var data = response.data
-      data.map((value, index) => {
-        if(!value.borBook) {
-          value.borBook = 0
-        }
-        value.borBook = value.borBook + '本'
-        return value.no = index+1
-      })
-      this.setState({
-        'data': data
+      axios.get('/api/system/getData').then((res)=>{
+        var sysData = res.data[0];
+        var data = response.data
+        data.map((value, index) => {
+          if(!value.borBook) {
+            value.borBook = 0
+          }
+          if(value.isTeacher=='学生'&&value.borBook>=sysData.stuMaxNum) {
+
+            value.borBook = value.borBook + '本(不可再借)'
+          }else if(value.isTeacher=='老师'&&value.borBook>=sysData.teacherMaxNum) {
+            value.borBook = value.borBook + '本(不可再借)'
+          }else{
+            value.borBook = value.borBook + '本'
+          }
+          return value.no = index+1
+        })
+        this.setState({
+          'data': data
+        })
       })
     }).catch((err)=>{
       console.log(err);
@@ -68,16 +78,24 @@ export default class UserInfo extends Component{
     var userCollege = this.refs.EditUserCollege.input.value
     var userDepart = this.refs.EditUserDepart.input.value
     if(userId&&userName&&userPass&&userType&&userSex&&userCollege&&userDepart) {
-        axios.post('/api/userInfo/EditUser',{
-          'oldId': oldId,
-          'userId': userId,
-          'userName': userName,
-          'userPass': userPass,
-          'userType': userType,
-          'userSex': userSex,
-          'userCollege': userCollege,
-          'userDepart': userDepart
-        }).then((response) => {
+        var file = document.getElementById("uploadUserPic").files[0];
+        console.log(file)
+        var formData=new FormData();
+        formData.append('img',file);
+        formData.append('oldId',oldId);
+        formData.append('userId',userId);
+        formData.append('userName',userName);
+        formData.append('userPass',userPass);
+        formData.append('userType',userType);
+        formData.append('userSex',userSex);
+        formData.append('userCollege',userCollege);
+        formData.append('userDepart',userDepart);
+        axios.post('/api/userInfo/EditUser',
+        formData,
+        'headers':{
+            'Content-type': 'application/x-www-form-urlencoded'
+        },
+      ).then((response) => {
           if(!(response.data.resultCode=='000000')) {
             notification.open({
               message: '操作失败',
@@ -130,6 +148,13 @@ export default class UserInfo extends Component{
             'loading': false
           })
           this.getData()
+          this.refs.userId.input.value = '';
+          this.refs.userName.input.value = '';
+          this.refs.userPass.input.value = '';
+          this.refs.userType.input.value = '';
+          this.refs.userSex.input.value = '';
+          this.refs.userCollege.input.value = '';
+          this.refs.userDepart.input.value = '';
         }).catch((err) => {
           console.log(err)
         })
@@ -142,9 +167,16 @@ export default class UserInfo extends Component{
     })
   }
   handleChange(value) {
-    this.setState({
-      'sort': value
-    })
+    if(value === '全部') {
+      this.setState({
+        'sort': ''
+      })
+    }else{
+
+      this.setState({
+        'sort': value
+      })
+    }
   }
   userSearch() {
     var that = this;
@@ -181,6 +213,7 @@ export default class UserInfo extends Component{
         'userId': value
       }
     }).then((response) =>{
+      var img = document.getElementById("uploadImg");
       this.refs.EditUserId.input.value = response.data[0].userId
       this.refs.EditUserName.input.value = response.data[0].userName
       this.refs.EditUserPass.input.value = response.data[0].password
@@ -188,6 +221,7 @@ export default class UserInfo extends Component{
       this.refs.EditUserSex.input.value = response.data[0].sex
       this.refs.EditUserCollege.input.value = response.data[0].college
       this.refs.EditUserDepart.input.value = response.data[0].department
+      img.src = "http://localhost:4000/upload/"+response.data[0].pic
     }).catch((error)=>{
       console.log(error)
     })
@@ -255,6 +289,7 @@ export default class UserInfo extends Component{
     }];
     return (
       <div>
+        <div className="Breadcrumb">用户信息/读者信息管理</div>
         <div>
           <div className="bookAdminSearch">
             <span className="bookAdminTitle">读者ID:</span>
@@ -271,7 +306,8 @@ export default class UserInfo extends Component{
           <div className="bookAdminSearch">
             <span className="bookAdminTitle">读者类别:</span>
             <div className="bookInput">
-            <Select defaultValue="学生" onChange={this.handleChange}>
+            <Select defaultValue="全部" onChange={this.handleChange}>
+              <Option value="全部">全部</Option>
               <Option value="学生">学生</Option>
               <Option value="老师">老师</Option>
             </Select>
@@ -279,7 +315,7 @@ export default class UserInfo extends Component{
           </div>
           <Button type="primary" icon="search" className="bookAdminSearchBtn" onClick={this.userSearch}>搜索</Button>
           <Button type="primary" icon="plus" className="bookAdminAddBtn" onClick={this.addUser}>增加</Button>
-          <Table columns={columns} dataSource={this.state.data} bordered/>
+          <Table columns={columns} dataSource={this.state.data} bordered pagination={{pageSize: 5}}/>
         </div>
         <Modal
           title={this.state.modalType}
@@ -390,6 +426,8 @@ export default class UserInfo extends Component{
               <Input ref="EditUserDepart"/>
             </div>
           </div>
+          <img src="" alt="请上传图片" id="uploadImg" className="picImgClass"/>
+          <input type="file" id="uploadUserPic" name="img"/>
         </Modal>
       </div>
     )
